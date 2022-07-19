@@ -1,3 +1,5 @@
+require("./src/models/User.js");
+require("./src/models/Post.js");
 require("dotenv").config();
 
 const mongoose = require("mongoose");
