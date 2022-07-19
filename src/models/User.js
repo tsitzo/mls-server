@@ -66,4 +66,23 @@ userSchema.pre("save", function (next) {
   });
 });
 
+//PW compares between input PW and DB PW
+userSchema.methods.comparePassword = function (canditatePassword) {
+  const user = this;
+
+  return new Promise((resolve, reject) => {
+    bcrypt.compare(canditatePassword, user.password, (err, isMatch) => {
+      if (err) {
+        return reject(err);
+      }
+
+      if (!isMatch) {
+        return reject(false);
+      }
+
+      resolve(true);
+    });
+  });
+};
+
 mongoose.model("User", userSchema);
