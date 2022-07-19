@@ -23,6 +23,8 @@ mongoose
   .then(() => console.log("Database Connected"))
   .catch((err) => console.log("Database Connection Error", err));
 
+app.use("/api/v1/auth", require("./src/routes/auth"));
+
 http.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
 });
