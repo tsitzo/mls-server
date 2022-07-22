@@ -185,3 +185,36 @@ exports.unlikePost = async (req, res) => {
     return res.status(500).send({ error: "Server Error" });
   }
 };
+
+exports.agreePost = async (req, res) => {
+  const { id } = req.params;
+  const { id: userId } = req.user;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).send({ error: "ID not valid" });
+  }
+
+  try {
+    const post = await Post.findById(id);
+
+    if (!post) {
+      return res.status(404).send({ error: "Post not found" });
+    }
+
+    if (post.pending) {
+      return res.status(400).send({ error: "Post is pending approval" });
+    }
+
+    if (post.agrees.some((agreeId) => agreeId.toString() === userId)) {
+      return res.status(400).send({ error: "Post Already agreed" });
+    } else {
+      post.agrees.unshift(userId);
+    }
+
+    await post.save();
+
+    res.send(post.agrees);
+  } catch (error) {
+    return res.status(500).send({ error: "Server Error" });
+  }
+};
