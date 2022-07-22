@@ -141,7 +141,7 @@ exports.likePost = async (req, res) => {
 
     await post.save();
 
-    res.send(post.likes);
+    res.status(200).send(post.likes);
   } catch (error) {
     return res.status(500).send({ error: "Server Error" });
   }
