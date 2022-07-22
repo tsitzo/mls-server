@@ -24,6 +24,7 @@ mongoose
   .catch((err) => console.log("Database Connection Error", err));
 
 app.use("/api/v1/auth", require("./src/routes/auth"));
+app.use("/api/v1/posts", require("./src/routes/posts"));
 
 http.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
