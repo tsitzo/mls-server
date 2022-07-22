@@ -6,6 +6,7 @@ const {
   deletePost,
   likePost,
   unlikePost,
+  agreePost,
 } = require("../controllers/posts");
 const { isAuth } = require("../middlewares/isAuth");
 const router = express.Router();
@@ -39,4 +40,9 @@ router.put("/:id/like", isAuth, likePost);
 //@desc       Unlikes a post by id
 //@@access    Private
 router.put("/:id/unlike", isAuth, unlikePost);
+
+//@route      PUT /api/v1/posts/:id/agree
+//@desc       Agree a post by id
+//@@access    Private
+router.put("/:id/agree", isAuth, agreePost);
 module.exports = router;
