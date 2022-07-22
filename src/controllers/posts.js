@@ -70,3 +70,39 @@ exports.createPost = async (req, res) => {
     return res.status(500).send({ error: "Server Error" });
   }
 };
+
+exports.deletePost = async (req, res) => {
+  const { id } = req.params;
+  const { id: userId } = req.user;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).send({ error: "ID not valid" });
+  }
+
+  const post = await Post.findById(id);
+
+  if (!post) {
+    return res.status(404).send({ error: "Post not found" });
+  }
+
+  if (post.pending) {
+    return res.status(400).send({ error: "Post is pending approval" });
+  }
+
+  if (post.user.toString() !== userId) {
+    return res.status(401).send({ error: "User unauthorized" });
+  }
+
+  try {
+    await User.updateMany(
+      {},
+      { $pull: { likes: id, posts: id } },
+      { new: true }
+    );
+
+    await post.remove();
+    res.status(200).send({ msg: "Post Deleted Successfully" });
+  } catch (error) {
+    return res.status(500).send({ error: "Server Error" });
+  }
+};
