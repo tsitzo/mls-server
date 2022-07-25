@@ -25,6 +25,7 @@ mongoose
 
 app.use("/api/v1/auth", require("./src/routes/auth"));
 app.use("/api/v1/posts", require("./src/routes/posts"));
+app.use("/api/v1/admin", require("./src/routes/admin"));
 
 http.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
