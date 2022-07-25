@@ -282,6 +282,7 @@ exports.commentPost = async (req, res) => {
       user: userId,
       text: text,
       username: user.username,
+      image: user.image.url,
     };
 
     post.comments.unshift(newComment);

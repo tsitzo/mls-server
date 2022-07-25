@@ -24,6 +24,7 @@ const postSchema = new Schema({
       user: { type: Schema.Types.ObjectId, ref: "User" },
       username: { type: String, required: true },
       createdAt: { type: Date, default: Date.now },
+      image: { type: String },
     },
   ],
   pending: { type: Boolean, default: true },
