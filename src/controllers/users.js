@@ -90,7 +90,7 @@ exports.unfollowUser = async (req, res) => {
   }
 
   if (userId === id) {
-    return res.status(400).send({ error: "You cannot follow yourself" });
+    return res.status(400).send({ error: "You cannot unfollow yourself" });
   }
 
   try {
@@ -121,6 +121,26 @@ exports.unfollowUser = async (req, res) => {
     await userFollowing.save();
 
     res.status(200).send(userToFollow.followers);
+  } catch (error) {
+    return res.status(500).send({ error: "Server Error" });
+  }
+};
+
+exports.getUserFollowing = async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).send({ error: "ID not valid" });
+  }
+
+  try {
+    const user = await User.findById(id).select("-password");
+
+    const following = await User.find({ _id: { $in: user.following } }).select(
+      "username image"
+    );
+
+    res.status(200).send(following);
   } catch (error) {
     return res.status(500).send({ error: "Server Error" });
   }
