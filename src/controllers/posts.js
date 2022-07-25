@@ -251,3 +251,45 @@ exports.deservePost = async (req, res) => {
     return res.status(500).send({ error: "Server Error" });
   }
 };
+
+exports.commentPost = async (req, res) => {
+  const { id } = req.params;
+  const { id: userId } = req.user;
+
+  const { text } = req.body;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).send({ error: "ID Not Valid" });
+  }
+
+  if (!text || !text.trim().length) {
+    return res.status(400).send({ error: "Text is required" });
+  }
+
+  try {
+    const user = await User.findById(userId);
+    const post = await Post.findById(id);
+
+    if (!post) {
+      return res.status(404).send({ error: "Post not found" });
+    }
+
+    if (post.pending) {
+      return res.status(400).send({ error: "Post is pending approval" });
+    }
+
+    const newComment = {
+      user: userId,
+      text: text,
+      username: user.username,
+    };
+
+    post.comments.unshift(newComment);
+
+    await post.save();
+
+    res.send(post.comments);
+  } catch (error) {
+    return res.status(500).send({ error: "Server Error" });
+  }
+};
