@@ -4,6 +4,7 @@ const {
   getUser,
   followUser,
   unfollowUser,
+  getUserFollowing,
 } = require("../controllers/users");
 
 const { isAuth } = require("../middlewares/isAuth");
@@ -29,5 +30,10 @@ router.put("/:id/follow", isAuth, followUser);
 //@desc       Unfollow a user
 //@@access    Private
 router.put("/:id/unfollow", isAuth, unfollowUser);
+
+//@route      GET api/v1/users/:id/following
+//@desc       Get all user following
+//@@access    Private
+router.get("/:id/following", isAuth, getUserFollowing);
 
 module.exports = router;
