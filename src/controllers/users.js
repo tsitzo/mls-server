@@ -145,3 +145,23 @@ exports.getUserFollowing = async (req, res) => {
     return res.status(500).send({ error: "Server Error" });
   }
 };
+
+exports.getUserFollowers = async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).send({ error: "ID not valid" });
+  }
+
+  try {
+    const user = await User.findById(id).select("-password");
+
+    const followers = await User.find({ _id: { $in: user.followers } }).select(
+      "username image"
+    );
+
+    res.status(200).send(followers);
+  } catch (error) {
+    return res.status(500).send({ error: "Server Error" });
+  }
+};
