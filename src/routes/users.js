@@ -1,5 +1,5 @@
 const express = require("express");
-const { getUsers, getUser } = require("../controllers/users");
+const { getUsers, getUser, followUser } = require("../controllers/users");
 
 const { isAuth } = require("../middlewares/isAuth");
 
@@ -14,5 +14,10 @@ router.get("/", isAuth, getUsers);
 //@desc       Get a user
 //@@access    Private
 router.get("/:id", isAuth, getUser);
+
+//@route      PUT /api/v1/users/:id/follow
+//@desc       Follow a user
+//@@access    Private
+router.put("/:id/follow", isAuth, followUser);
 
 module.exports = router;
