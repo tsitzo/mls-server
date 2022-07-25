@@ -80,3 +80,48 @@ exports.followUser = async (req, res) => {
     return res.status(500).send({ error: "Server Error" });
   }
 };
+
+exports.unfollowUser = async (req, res) => {
+  const { id } = req.params;
+  const { id: userId } = req.user;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).send({ error: "ID not valid" });
+  }
+
+  if (userId === id) {
+    return res.status(400).send({ error: "You cannot follow yourself" });
+  }
+
+  try {
+    const userToFollow = await User.findById(id);
+    const userFollowing = await User.findById(userId);
+
+    if (!userToFollow || !userFollowing) {
+      return res.status(400).send({ error: "User not found" });
+    }
+
+    if (
+      !userToFollow.followers.some((user) => user.toString() === userId) &&
+      !userFollowing.following.some(
+        (user) => user.toString() === userToFollow.id
+      )
+    ) {
+      return res.status(400).send({ error: "User need to be followed" });
+    }
+
+    userToFollow.followers = userToFollow.followers.filter(
+      (user) => user.toString() !== userId
+    );
+    userFollowing.following = userFollowing.following.filter(
+      (user) => user.toString() !== userToFollow.id
+    );
+
+    await userToFollow.save();
+    await userFollowing.save();
+
+    res.status(200).send(userToFollow.followers);
+  } catch (error) {
+    return res.status(500).send({ error: "Server Error" });
+  }
+};
