@@ -1,5 +1,9 @@
 const express = require("express");
-const { getPendingPosts, approvePost } = require("../controllers/admin");
+const {
+  getPendingPosts,
+  approvePost,
+  rejectPost,
+} = require("../controllers/admin");
 const { isAdmin } = require("../middlewares/isAdmin");
 const { isAuth } = require("../middlewares/isAuth");
 
@@ -14,5 +18,10 @@ router.get("/posts", [isAuth, isAdmin], getPendingPosts);
 //@desc       Approves a post
 //@@access    Private
 router.put("/posts/:id/approve", [isAuth, isAdmin], approvePost);
+
+//@route      PUT /api/v1/admin/posts/:id/reject
+//@desc       Approves a post
+//@@access    Private
+router.put("/posts/:id/reject", [isAuth, isAdmin], rejectPost);
 
 module.exports = router;
